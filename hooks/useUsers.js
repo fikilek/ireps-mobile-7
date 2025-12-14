@@ -1,0 +1,60 @@
+import { useEffect, useState } from "react";
+import { object, string } from "yup";
+import { useGetUsersQuery } from "../redux/usersSlice";
+
+export const useUsers = () => {
+  console.log(`useUsers ----running`);
+
+  // Get all ireps users
+  const { data: users, isLoading, isError, isFetching } = useGetUsersQuery();
+  console.log(`useUsers ----users`, users);
+  console.log(`useUsers ----isLoading`, isLoading);
+  console.log(`useUsers ----isError`, isError);
+  console.log(`useUsers ----isFetching`, isFetching);
+
+  const [activeUsers, setActiveUsers] = useState(); // Active erfs are the one currently on display
+  console.log(`useUsers ----activeUsers`, activeUsers);
+
+  const [activeUsersName, setActiveUsersName] = useState();
+
+  useEffect(() => {
+    console.log(`useUsers ----useEffect Setting active users`);
+    setActiveUsers(users); // Default to the first 10 erfs
+    setActiveUsersName("users");
+  }, [users]);
+
+  const userNewFormData = {
+    email: "",
+    surname: "",
+    name: "",
+    phoneNumber: "",
+    password: "",
+    confirmPassword: "",
+    status: "",
+    workbase: "",
+  };
+
+  const userValidationSchema = object().shape({
+    email: string().required("Required"),
+    surname: string().required("Required"),
+    name: string().required("Required"),
+    phoneNumber: string().required("Required"),
+    password: string().required("Required"),
+    confirmPassword: string().required("Required"),
+    workbase: string().required("Required"),
+  });
+
+  return {
+    users,
+    activeUsers,
+    setActiveUsers,
+    activeUsersName,
+    setActiveUsersName,
+
+    isLoading,
+    isError,
+    isFetching,
+    userNewFormData,
+    userValidationSchema,
+  };
+};
